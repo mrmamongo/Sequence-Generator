@@ -126,8 +126,13 @@ void server::handle_client(const ip_address &addr) {
         if (!received.empty()) {
             if (query.find("export") != std::string::npos) {
                 while (true) {
-                    auto data = seq_storage::instance()->next((*client_ptr)->address());
-                    if (!(*client_ptr)->send_data(std::vector<uint8_t>{data.begin(), data.end()})) {
+                    try {
+                        auto data = seq_storage::instance()->next((*client_ptr)->address());
+                        if (!(*client_ptr)->send_data(std::vector<uint8_t>{data.begin(), data.end()})) {
+                            break;
+                        }
+                    } catch (std::exception &e) {
+                        std::cout << e.what() << std::endl;
                         break;
                     }
                 }
