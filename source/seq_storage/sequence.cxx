@@ -12,7 +12,9 @@ counter sequence::next() {
 
 sequence::sequence(counter start, counter step):
         step(step),
-        current(start) {}
+        current(start),
+        valid(true)
+        {}
 
 counter sequence::get_current() const {
     return current;
@@ -20,4 +22,8 @@ counter sequence::get_current() const {
 
 counter sequence::get_step() const {
     return step;
+}
+
+sequence::operator bool() const {
+    return valid;
 }

@@ -63,6 +63,7 @@ std::vector<uint8_t> seq_storage::next(const ip_address &name) {
     for (auto &seq: _storage[name]) {
         result += std::to_string(seq.next()) + " ";
     }
+    result += "\n\r";
     return {result.begin(), result.end()};
 }
 
@@ -70,4 +71,10 @@ bool seq_storage::create_sequence(const ip_address& addr) {
     std::scoped_lock<std::mutex> lock(_mutex);
     auto [_, added] = (_storage.try_emplace(addr, std::array<sequence, 3>{}));
     return added;
+}
+
+bool seq_storage::valid(const ip_address &name) const {
+    std::scoped_lock<std::mutex> lock(_mutex);
+    auto seq = _storage.find(name);
+    return seq != _storage.end() && std::all_of(seq->second.begin(), seq->second.end(), std::mem_fn(&sequence::operator bool));
 }

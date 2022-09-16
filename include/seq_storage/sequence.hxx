@@ -21,9 +21,11 @@ public:
     counter next();
     counter get_current() const;
     counter get_step() const;
+    operator bool() const;
 private:
     counter step = 0;
-    counter current = UINT64_MAX;
+    counter current = 0;
+    bool valid = false;
 };
 
 

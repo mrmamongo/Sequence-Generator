@@ -42,7 +42,7 @@ public:
     virtual socket_status disconnect() = 0;
     virtual socket_status status() const = 0;
     virtual bool send_data(const std::vector<uint8_t>&) const = 0;
-    virtual std::vector<uint8_t> receive_data() = 0;
+    virtual std::vector<uint8_t> receive_data(uint timeout) = 0;
     virtual uint32_t host() const = 0;
     virtual uint16_t port() const = 0;
     virtual ip_address address() const = 0;

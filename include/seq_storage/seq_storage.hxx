@@ -73,6 +73,10 @@ public:
 /// \return строка с тремя значениями последовательности
     std::vector<uint8_t> next(const ip_address &name);
 
+    /// \brief Возвращает, валидна ли последовательность
+    /// \param name
+    /// \return
+    bool valid(const ip_address &name) const;
 private:
     static seq_storage *volatile storage;
     std::map<ip_address, std::array<sequence, 3>> _storage;

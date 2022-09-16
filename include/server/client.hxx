@@ -26,7 +26,7 @@ public:
     socket_status disconnect() override;
     [[nodiscard]] socket_status status() const override { return _status; }
     [[nodiscard]] bool send_data(const std::vector<uint8_t> &buffer) const override;
-    std::vector<uint8_t> receive_data() override;
+    std::vector<uint8_t> receive_data(uint timeout = -1) override;
     [[nodiscard]] ip_address address() const override {
         return {_addr.sin_addr.s_addr, _addr.sin_port};
     }

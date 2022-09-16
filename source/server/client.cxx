@@ -34,19 +34,19 @@ bool client::send_data(const std::vector<uint8_t> &buffer) const {
     return true;
 }
 
-std::vector<uint8_t> client::receive_data() {
+std::vector<uint8_t> client::receive_data(uint timeout) {
     if (_status != socket_status::connected) return {};
     std::vector<uint8_t> buffer(_buffer_size);
     fd_set set;
-    struct timeval timeout{};
+    struct timeval timeout_s{};
     int rv;
     FD_ZERO(&set);
     FD_SET(_socket, &set);
-    timeout.tv_sec = 10;
-    timeout.tv_usec = 0;
+    timeout_s.tv_sec = timeout;
+    timeout_s.tv_usec = 0;
     char value{};
     while (value != '\n') {
-        rv = select(_socket + 1, &set, nullptr, nullptr, &timeout);
+        rv = select(_socket + 1, &set, nullptr, nullptr, &timeout_s);
         if (rv == -1) {
             std::cout << "select error" << std::endl;
             return {};

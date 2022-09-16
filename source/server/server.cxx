@@ -127,8 +127,13 @@ void server::handle_client(const ip_address &addr) {
             if (query.find("export") != std::string::npos) {
                 while (true) {
                     try {
-                        auto data = seq_storage::instance()->next((*client_ptr)->address());
-                        if (!(*client_ptr)->send_data(std::vector<uint8_t>{data.begin(), data.end()})) {
+                        if ((seq_storage::instance()->valid((*client_ptr)->address()))) {
+                            auto data = seq_storage::instance()->next((*client_ptr)->address());
+                            if (!(*client_ptr)->send_data(std::vector < uint8_t > {data.begin(), data.end()})) {
+                                break;
+                            }
+                        } else {
+                            (*client_ptr)->send_data(std::vector<uint8_t>{'E', 'R', 'R', 'O', 'R', '\n'});
                             break;
                         }
                     } catch (std::exception &e) {
@@ -140,18 +145,18 @@ void server::handle_client(const ip_address &addr) {
                 if (!seq_storage::instance()->contains((*client_ptr)->address()))
                     seq_storage::instance()->create_sequence((*client_ptr)->address());
                 if (seq_storage::instance()->add_sequence((*client_ptr)->address(), query)) {
-                    if (!(*client_ptr)->send_data(std::vector<uint8_t>{'O', 'K'})) {
+                    if (!(*client_ptr)->send_data(std::vector<uint8_t>{'O', 'K', '\n', '\r'})) {
                         break;
                     }
                 } else {
-                    if (!(*client_ptr)->send_data(std::vector<uint8_t>{'E', 'R', 'R', 'O', 'R'})) {
+                    if (!(*client_ptr)->send_data(std::vector<uint8_t>{'E', 'R', 'R', 'O', 'R', '\n', '\r'})) {
                         break;
                     }
                 }
             } else {
                 if (!(*client_ptr)->send_data(
                         std::vector<uint8_t>{'U', 'n', 'e', 'x', 'p', 'e', 'c', 't', 'e', 'd', ' ', 'c', 'o', 'm', 'm',
-                                             'a', 'n', 'd'})){
+                                             'a', 'n', 'd', '\n', '\r'})){
                     break;
                 }
             }
